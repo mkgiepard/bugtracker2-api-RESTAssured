@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: dev.softtest.bugtracker.FirstTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.463 s - in dev.softtest.bugtracker.FirstTest
