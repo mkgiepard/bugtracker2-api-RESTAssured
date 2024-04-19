@@ -23,7 +23,7 @@ public class FirstTest {
         System.out.println(env.get("USER1_PWD"));
 
         given().
-            port(3000).
+            port(3001).
         when().
             get("/app/testing").
         then().

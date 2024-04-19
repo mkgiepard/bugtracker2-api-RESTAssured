@@ -25,3 +25,6 @@ replay_pid*
 
 # Dotenv-java
 .env
+
+# target directory
+target/*
