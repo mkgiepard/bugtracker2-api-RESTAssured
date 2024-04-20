@@ -1,17 +1,19 @@
 package dev.softtest.bugtracker;
 
+import com.google.gson.Gson;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import io.github.cdimascio.dotenv.Dotenv;
+import java.util.*;
+import org.bson.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.gson.Gson;
-
-import static io.restassured.RestAssured.*;
+import static com.mongodb.client.model.Filters.eq;
 import static io.restassured.matcher.RestAssuredMatchers.*;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
-
-import io.github.cdimascio.dotenv.Dotenv;
-
-import java.util.*;
 
 public class FirstTest {
     public static Dotenv env;
@@ -19,6 +21,7 @@ public class FirstTest {
     @BeforeClass
     public static void setup() {
         env = Dotenv.load();
+        wipe("test_usersdb", "users");
      }
 
     @Test
@@ -57,5 +60,13 @@ public class FirstTest {
         then().
             statusCode(200).
             body("msg", equalTo("User '" + userMap.get("username") + "' successfully registered!"));
+    }
+
+    private static void wipe(String db, String collection) {
+        String uri = "mongodb://127.0.0.1:27017";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase(db);
+            database.getCollection(collection).drop();
+        }
     }
 }
