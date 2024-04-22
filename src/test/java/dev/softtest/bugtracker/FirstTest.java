@@ -5,15 +5,21 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.InsertOneResult;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.*;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import static com.mongodb.client.model.Filters.eq;
 import static io.restassured.matcher.RestAssuredMatchers.*;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+
+
 
 public class FirstTest {
     public static Dotenv env;
@@ -21,7 +27,12 @@ public class FirstTest {
     @BeforeClass
     public static void setup() {
         env = Dotenv.load();
+     }
+
+     @Before
+     public void beforeEach() {
         wipe("test_usersdb", "users");
+        seedUsers("test_usersdb");
      }
 
     @Test
@@ -64,10 +75,9 @@ public class FirstTest {
 
     @Test
     public void login_returns_200_access_and_refresh_tokens() {
-        // ! This test is wrong as it depends on the previous one -- CHANGE IT with proper seeding!
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();
-        userMap.put("username", "jhonny");
+        userMap.put("username", "mario");
         userMap.put("password", "magic");
         
         // Serialization
@@ -127,11 +137,36 @@ public class FirstTest {
             body("error", equalTo("Wrong user or password"));
     }
 
+    @Test
+    public void testSeeder() {
+        seedUsers("test_usersdb");
+    }
+
     private static void wipe(String db, String collection) {
         String uri = "mongodb://127.0.0.1:27017";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase(db);
             database.getCollection(collection).drop();
+        }
+    }
+
+    private static void seedUsers(String db) {
+
+        String uri = "mongodb://127.0.0.1:27017";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase(db);
+            MongoCollection<Document> collection = database.getCollection("users");
+            Document testUserOne = new Document("_id", new ObjectId())
+                .append("username", "mario")
+                .append("email", "mario@softtest.dev")
+                .append("password", env.get("DEFAULT_PWD"));
+            Document testUserTwo = new Document("_id", new ObjectId())
+                .append("username", "bross")
+                .append("email", "bross@softtest.dev")
+                .append("password", env.get("DEFAULT_PWD"));
+
+            InsertOneResult resultOne = collection.insertOne(testUserOne);
+            InsertOneResult resultTwo = collection.insertOne(testUserTwo);
         }
     }
 }
