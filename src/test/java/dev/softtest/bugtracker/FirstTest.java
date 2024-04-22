@@ -62,6 +62,29 @@ public class FirstTest {
             body("msg", equalTo("User '" + userMap.get("username") + "' successfully registered!"));
     }
 
+    @Test
+    public void login_returns_200_access_and_refresh_tokens() {
+        // ! This test is wrong as it depends on the previous one -- CHANGE IT with proper seeding!
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "jhonny");
+        userMap.put("password", "magic");
+        
+        // Serialization
+        String userJson = gson.toJson(userMap);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            post("/auth/login").
+        then().
+            statusCode(200).
+            body("accessToken", notNullValue()).
+            body("refreshToken", notNullValue());
+    }
+
     private static void wipe(String db, String collection) {
         String uri = "mongodb://127.0.0.1:27017";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
