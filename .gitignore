@@ -28,3 +28,5 @@ replay_pid*
 
 # target directory
 target/
+target/surefire-reports/dev.softtest.bugtracker.FirstTest.txt
+target/surefire-reports/TEST-dev.softtest.bugtracker.FirstTest.xml
