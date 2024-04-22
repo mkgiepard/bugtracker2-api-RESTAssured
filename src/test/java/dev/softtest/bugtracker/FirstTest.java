@@ -85,6 +85,48 @@ public class FirstTest {
             body("refreshToken", notNullValue());
     }
 
+    @Test
+    public void login_returns_401_on_wrong_password() {
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "jhonny");
+        userMap.put("password", "wrong!");
+        
+        // Serialization
+        String userJson = gson.toJson(userMap);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            post("/auth/login").
+        then().
+            statusCode(401).
+            body("error", equalTo("Wrong user or password"));
+    }
+
+    @Test
+    public void login_returns_401_on_wrong_user() {
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "no-such-user");
+        userMap.put("password", "wrong!");
+        
+        // Serialization
+        String userJson = gson.toJson(userMap);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            post("/auth/login").
+        then().
+            statusCode(401).
+            body("error", equalTo("Wrong user or password"));
+    }
+
     private static void wipe(String db, String collection) {
         String uri = "mongodb://127.0.0.1:27017";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
