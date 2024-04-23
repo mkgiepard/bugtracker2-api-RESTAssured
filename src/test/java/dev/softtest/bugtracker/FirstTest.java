@@ -138,6 +138,101 @@ public class FirstTest {
     }
 
     @Test
+    public void get_users_returns_200_and_2_users() {
+        given().
+            port(3001).
+        when().
+            get("/app/users").
+        then().
+            statusCode(200).
+            body("size()", is(2));
+    }
+
+    @Test
+    public void get_users_by_username_returns_200_and_the_user() {
+        given().
+            port(3001).
+        when().
+            get("/app/users/mario").
+        then().
+            statusCode(200).
+            body("username", equalTo("mario")).
+            body("email", equalTo("mario@softtest.dev")).
+            body("$", not(hasKey("password")));
+    }
+
+    @Test
+    public void get_users_by_username_returns_404_when_user_not_found() {
+        given().
+            port(3001).
+        when().
+            get("/app/users/not-found").
+        then().
+            statusCode(404);
+    }
+
+    @Test
+    public void put_users_by_username_returns_200_and_updates_the_username_and_email() {
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "mario-updated");
+        userMap.put("email", "mario-updated@softtest.dev");
+        
+        String userJson = gson.toJson(userMap);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            put("/app/users/mario").
+        then().
+            statusCode(200).
+            body("msg", equalTo("User 'mario-updated' successfully updated!"));
+    }
+
+
+    @Test
+    public void put_users_by_username_returns_404_when_user_not_found() {
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "mario-updated");
+        userMap.put("email", "mario-updated@softtest.dev");
+        
+        String userJson = gson.toJson(userMap);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            put("/app/users/not-found").
+        then().
+            statusCode(404);
+    }
+
+    @Test
+    public void delete_users_by_username_returns_204() {
+        given().
+            port(3001).
+        when().
+            delete("/app/users/mario").
+        then().
+            statusCode(200).
+            body("msg", equalTo("User 'mario' successfully deleted!"));
+    }
+
+    @Test
+    public void delete_users_by_username_returns_204_when_user_not_found() {
+        given().
+            port(3001).
+        when().
+            delete("/app/users/not-found").
+        then().
+            statusCode(404);
+    }
+
+    @Test
     public void testSeeder() {
         seedUsers("test_usersdb");
     }
