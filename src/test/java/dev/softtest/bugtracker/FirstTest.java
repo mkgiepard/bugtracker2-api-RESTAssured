@@ -223,7 +223,7 @@ public class FirstTest {
     }
 
     @Test
-    public void delete_users_by_username_returns_204_when_user_not_found() {
+    public void delete_users_by_username_returns_404_when_user_not_found() {
         given().
             port(3001).
         when().
