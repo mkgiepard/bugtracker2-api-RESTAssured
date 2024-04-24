@@ -141,6 +141,7 @@ public class FirstTest {
     public void get_users_returns_200_and_2_users() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             get("/app/users").
         then().
@@ -235,6 +236,25 @@ public class FirstTest {
     @Test
     public void testSeeder() {
         seedUsers("test_usersdb");
+    }
+
+    private String getAccessToken() {
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "mario");
+        userMap.put("password", "magic");
+        String userJson = gson.toJson(userMap);
+
+        String accessToken = given().
+                port(3001).
+                contentType("application/json").
+                body(userJson.toString()).
+            when().
+                post("/auth/login").
+                jsonPath().
+                get("accessToken");
+        
+        return accessToken;
     }
 
     private static void wipe(String db, String collection) {
