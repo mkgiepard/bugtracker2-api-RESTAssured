@@ -153,6 +153,7 @@ public class FirstTest {
     public void get_users_by_username_returns_200_and_the_user() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             get("/app/users/mario").
         then().
@@ -166,6 +167,7 @@ public class FirstTest {
     public void get_users_by_username_returns_404_when_user_not_found() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             get("/app/users/not-found").
         then().
@@ -183,6 +185,7 @@ public class FirstTest {
 
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
             contentType("application/json").
             body(userJson.toString()).
         when().
@@ -204,6 +207,7 @@ public class FirstTest {
 
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
             contentType("application/json").
             body(userJson.toString()).
         when().
@@ -216,6 +220,7 @@ public class FirstTest {
     public void delete_users_by_username_returns_204() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             delete("/app/users/mario").
         then().
@@ -227,6 +232,7 @@ public class FirstTest {
     public void delete_users_by_username_returns_404_when_user_not_found() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             delete("/app/users/not-found").
         then().
