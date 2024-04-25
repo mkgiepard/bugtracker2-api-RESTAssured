@@ -268,6 +268,9 @@ public class FirstTest {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase(db);
             database.getCollection(collection).drop();
+        } catch (Exception e) {
+            System.out.println("...while wiping");
+            throw e;
         }
     }
 
@@ -288,6 +291,9 @@ public class FirstTest {
 
             InsertOneResult resultOne = collection.insertOne(testUserOne);
             InsertOneResult resultTwo = collection.insertOne(testUserTwo);
+        } catch (Exception e) {
+            System.out.println("...while seeding");
+            throw e;
         }
     }
 }

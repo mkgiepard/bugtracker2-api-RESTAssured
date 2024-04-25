@@ -27,8 +27,15 @@ public class UserSeeder {
         new User("qbtest", "qbtest@selftest.dev", "Qb", "Test", env.get("DEFAULT_PWD"))
     };
 
-    public static void wipe() {
-        // TODO
+    public static void wipe(String db) {
+        String uri = "mongodb://127.0.0.1:27017";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase(db);
+            database.getCollection("users").drop();
+        } catch (Exception e) {
+            System.out.println("...while wiping");
+            throw e;
+        }
     }
 
     public static void seed(String db) {
@@ -42,6 +49,7 @@ public class UserSeeder {
                 .append("firstName", u.getFirstName())
                 .append("lastName", u.getLastName())
                 .append("password", u.getPassword());
+            System.out.println(d);
             userData.add(d);
         }
 
@@ -49,13 +57,13 @@ public class UserSeeder {
             MongoDatabase database = mongoClient.getDatabase(db);
             MongoCollection<Document> collection = database.getCollection("users");
             InsertManyResult result = collection.insertMany(userData);
-            System.out.println(result);
         } catch(Exception e) {
             throw e;
         }
     }
 
     public static void main(String[] args) {
+        wipe("dev_usersdb");
         seed("dev_usersdb");
     }
     
