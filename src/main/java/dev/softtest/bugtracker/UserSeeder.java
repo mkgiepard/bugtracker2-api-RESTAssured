@@ -4,6 +4,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.InsertManyResult;
 
 import org.bson.Document;
@@ -56,6 +58,10 @@ public class UserSeeder {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase(db);
             MongoCollection<Document> collection = database.getCollection("users");
+
+            IndexOptions indexOptions = new IndexOptions().unique(true);
+            collection.createIndex(Indexes.text("username"), indexOptions);
+
             InsertManyResult result = collection.insertMany(userData);
         } catch(Exception e) {
             throw e;

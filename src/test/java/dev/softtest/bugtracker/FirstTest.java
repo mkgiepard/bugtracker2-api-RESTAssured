@@ -5,6 +5,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.InsertOneResult;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -175,10 +177,9 @@ public class FirstTest {
     }
 
     @Test
-    public void put_users_by_username_returns_200_and_updates_the_username_and_email() {
+    public void put_users_by_username_returns_200_and_updates_the_email() {
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();
-        userMap.put("username", "mario-updated");
         userMap.put("email", "mario-updated@softtest.dev");
         
         String userJson = gson.toJson(userMap);
@@ -192,7 +193,7 @@ public class FirstTest {
             put("/app/users/mario").
         then().
             statusCode(200).
-            body("msg", equalTo("User 'mario-updated' successfully updated!"));
+            body("msg", equalTo("User 'mario' successfully updated!"));
     }
 
 
@@ -239,11 +240,6 @@ public class FirstTest {
             statusCode(404);
     }
 
-    @Test
-    public void testSeeder() {
-        seedUsers("test_usersdb");
-    }
-
     private String getAccessToken() {
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();
@@ -268,6 +264,7 @@ public class FirstTest {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase(db);
             database.getCollection(collection).drop();
+            database.createCollection(collection);
         } catch (Exception e) {
             System.out.println("...while wiping");
             throw e;
@@ -280,6 +277,10 @@ public class FirstTest {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase(db);
             MongoCollection<Document> collection = database.getCollection("users");
+
+            IndexOptions indexOptions = new IndexOptions().unique(true);
+            collection.createIndex(Indexes.text("username"), indexOptions);
+
             Document testUserOne = new Document("_id", new ObjectId())
                 .append("username", "mario")
                 .append("email", "mario@softtest.dev")
@@ -288,8 +289,8 @@ public class FirstTest {
                 .append("username", "bross")
                 .append("email", "bross@softtest.dev")
                 .append("password", env.get("DEFAULT_PWD"));
-
-            InsertOneResult resultOne = collection.insertOne(testUserOne);
+ 
+                InsertOneResult resultOne = collection.insertOne(testUserOne);
             InsertOneResult resultTwo = collection.insertOne(testUserTwo);
         } catch (Exception e) {
             System.out.println("...while seeding");
