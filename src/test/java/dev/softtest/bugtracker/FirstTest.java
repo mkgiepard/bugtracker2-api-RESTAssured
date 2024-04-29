@@ -75,6 +75,29 @@ public class FirstTest {
             body("msg", equalTo("User '" + userMap.get("username") + "' successfully registered!"));
     }
 
+    @Test 
+    public void register_returns_409_on_duplicated_username_and_error() {
+
+        Gson gson = new Gson();
+        Map<String, String> userMap = new LinkedHashMap<>();
+        userMap.put("username", "mario");
+        userMap.put("email", "jhonny@example.invalid");
+        userMap.put("password", "magic");
+        
+        // Serialization
+        String userJson = gson.toJson(userMap);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            post("/auth/register").
+        then().
+            statusCode(409).
+            body("error", equalTo("User with this username already exists!"));
+    }
+
     @Test
     public void login_returns_200_access_and_refresh_tokens() {
         Gson gson = new Gson();
