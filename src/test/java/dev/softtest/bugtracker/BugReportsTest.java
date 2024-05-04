@@ -59,6 +59,19 @@ public class BugReportsTest {
             body("size()", is(6));
     }
 
+    @Test
+    public void get_bugreports_by_is_returns_200_and_the_bugreport() {
+        given().
+            port(3001).
+        when().
+            get("/app/bugreports/1001").
+        then().
+            statusCode(200).
+            body("id", equalTo(1001)).
+            body("title", equalTo("bug report 1001")).
+            body("author", equalTo("mario"));
+    }
+
     private String getAccessToken() {
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();
