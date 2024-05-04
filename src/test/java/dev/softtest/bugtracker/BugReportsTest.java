@@ -22,7 +22,6 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 
-
 public class BugReportsTest {
     public static Dotenv env;
 
@@ -33,8 +32,8 @@ public class BugReportsTest {
 
      @Before
      public void beforeEach() {
-        wipe("test_usersdb", "bugreports");
-        seedUsers("test_usersdb");
+        BugReportSeeder.wipe("test_usersdb");
+        BugReportSeeder.seed("test_usersdb");
      }
 
     @Test
@@ -69,42 +68,4 @@ public class BugReportsTest {
         return accessToken;
     }
 
-    private static void wipe(String db, String collection) {
-        String uri = "mongodb://127.0.0.1:27017";
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoDatabase database = mongoClient.getDatabase(db);
-            database.getCollection(collection).drop();
-            database.createCollection(collection);
-        } catch (Exception e) {
-            System.out.println("...while wiping");
-            throw e;
-        }
-    }
-
-    private static void seedUsers(String db) {
-
-        String uri = "mongodb://127.0.0.1:27017";
-        try (MongoClient mongoClient = MongoClients.create(uri)) {
-            MongoDatabase database = mongoClient.getDatabase(db);
-            MongoCollection<Document> collection = database.getCollection("bugreports");
-
-            IndexOptions indexOptions = new IndexOptions().unique(true);
-            collection.createIndex(Indexes.text("username"), indexOptions);
-
-            Document testUserOne = new Document("_id", new ObjectId())
-                .append("username", "mario")
-                .append("email", "mario@softtest.dev")
-                .append("password", env.get("DEFAULT_PWD"));
-            Document testUserTwo = new Document("_id", new ObjectId())
-                .append("username", "bross")
-                .append("email", "bross@softtest.dev")
-                .append("password", env.get("DEFAULT_PWD"));
- 
-                InsertOneResult resultOne = collection.insertOne(testUserOne);
-            InsertOneResult resultTwo = collection.insertOne(testUserTwo);
-        } catch (Exception e) {
-            System.out.println("...while seeding");
-            throw e;
-        }
-    }
 }
