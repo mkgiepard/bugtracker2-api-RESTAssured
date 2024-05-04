@@ -46,7 +46,17 @@ public class BugReportsTest {
         then().
             statusCode(200).
             body("msg", equalTo("SUCCESS: not protected /testing route (3000)"));
+    }
 
+    @Test
+    public void get_bugreports_returns_200_and_6_bugreports() {
+        given().
+            port(3001).
+        when().
+            get("/app/bugreports").
+        then().
+            statusCode(200).
+            body("size()", is(6));
     }
 
     private String getAccessToken() {
