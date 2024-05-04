@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 
 
 
-public class FirstTest {
+public class UsersTest {
     public static Dotenv env;
 
     @BeforeClass
