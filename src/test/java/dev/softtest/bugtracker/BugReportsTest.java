@@ -116,6 +116,17 @@ public class BugReportsTest {
             body("msg", equalTo("BugReport '1001' successfully updated!"));
     }
 
+    @Test
+    public void delete_bugreports_by_id_returns_200() {
+        given().
+            port(3001).
+        when().
+            delete("/app/bugreports/1001").
+        then().
+            statusCode(200).
+            body("msg", equalTo("BugReport '1001' successfully deleted!"));
+    }
+
     private String getAccessToken() {
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();

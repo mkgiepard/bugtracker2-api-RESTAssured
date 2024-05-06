@@ -241,7 +241,7 @@ public class UsersTest {
     }
 
     @Test
-    public void delete_users_by_username_returns_204() {
+    public void delete_users_by_username_returns_200() {
         given().
             port(3001).
             auth().oauth2(getAccessToken()).
