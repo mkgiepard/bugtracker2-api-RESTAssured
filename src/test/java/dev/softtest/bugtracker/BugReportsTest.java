@@ -52,6 +52,7 @@ public class BugReportsTest {
     public void get_bugreports_returns_200_and_6_bugreports() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             get("/app/bugreports").
         then().
@@ -63,6 +64,7 @@ public class BugReportsTest {
     public void get_bugreports_by_is_returns_200_and_the_bugreport() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             get("/app/bugreports/1001").
         then().
@@ -87,6 +89,7 @@ public class BugReportsTest {
 
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
             contentType("application/json").
             body(userJson.toString()).
         when().
@@ -107,6 +110,7 @@ public class BugReportsTest {
 
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
             contentType("application/json").
             body(userJson.toString()).
         when().
@@ -120,6 +124,7 @@ public class BugReportsTest {
     public void delete_bugreports_by_id_returns_200() {
         given().
             port(3001).
+            auth().oauth2(getAccessToken()).
         when().
             delete("/app/bugreports/1001").
         then().
