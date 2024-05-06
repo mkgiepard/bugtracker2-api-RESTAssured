@@ -72,6 +72,30 @@ public class BugReportsTest {
             body("author", equalTo("mario"));
     }
 
+    @Test 
+    public void post_bugreports_returns_200_and_confirmation_msg() {
+        Gson gson = new Gson();
+        BugReport br = new BugReport.Builder(1099, "mario", BugReportSeeder.getDate("2024-04-13T11:33"))
+                .title("bug report 1099")
+                .priority(0)
+                .status("New")
+                .description("lorem epsum...")
+                .updated(BugReportSeeder.getDate("2024-04-13T13:44"))
+                .build();
+
+        String userJson = gson.toJson(br);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            post("/app/bugreports").
+        then().
+            statusCode(200).
+            body("msg", equalTo("BugReport '1099' successfully registered!"));
+    }
+
     private String getAccessToken() {
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();

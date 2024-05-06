@@ -111,7 +111,7 @@ public class BugReportSeeder {
         seed("test_usersdb");
     }
 
-    private static Date getDate(String d) {
+    public static Date getDate(String d) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         Date result = new Date();
         try {

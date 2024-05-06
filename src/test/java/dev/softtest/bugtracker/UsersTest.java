@@ -39,8 +39,8 @@ public class UsersTest {
 
     @Test
     public void testing_returns_200_with_expected_msg() {
-        System.out.println(env.get("USER1_USERNAME"));
-        System.out.println(env.get("USER1_PWD"));
+        // System.out.println(env.get("USER1_USERNAME"));
+        // System.out.println(env.get("USER1_PWD"));
 
         given().
             port(3001).
