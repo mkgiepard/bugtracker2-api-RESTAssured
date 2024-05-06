@@ -96,6 +96,26 @@ public class BugReportsTest {
             body("msg", equalTo("BugReport '1099' successfully registered!"));
     }
 
+    @Test
+    public void put_bugreports_by_id_returns_200_and_updates_the_title() {
+        Gson gson = new Gson();
+        BugReport br = new BugReport.Builder(1001, "mario", BugReportSeeder.getDate("2024-04-13T11:33"))
+                .title("updated title")
+                .build();
+
+        String userJson = gson.toJson(br);
+
+        given().
+            port(3001).
+            contentType("application/json").
+            body(userJson.toString()).
+        when().
+            put("/app/bugreports/1001").
+        then().
+            statusCode(200).
+            body("msg", equalTo("BugReport '1001' successfully updated!"));
+    }
+
     private String getAccessToken() {
         Gson gson = new Gson();
         Map<String, String> userMap = new LinkedHashMap<>();
