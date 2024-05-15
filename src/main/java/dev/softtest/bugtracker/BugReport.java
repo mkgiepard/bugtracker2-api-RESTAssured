@@ -1,6 +1,7 @@
 package dev.softtest.bugtracker;
 
 import java.util.Date;
+import java.util.List;
 
 public class BugReport {
     private final int id;
@@ -10,6 +11,8 @@ public class BugReport {
     private int priority;
     private String status;
     private String description;
+    private List<BugReportComment> comments;
+    private List<BugReportUpdate> updates;
     private Date updated;
 
     private BugReport(Builder builder) {
@@ -20,6 +23,8 @@ public class BugReport {
         this.priority = builder.priority;
         this.status = builder.status;
         this.description = builder.description;
+        this.comments = builder.comments;
+        this.updates = builder.updates;
         this.updated = builder.updated;
     }
 
@@ -30,6 +35,8 @@ public class BugReport {
     public int getPriority() { return priority; }
     public String getStatus() { return status; }
     public String getDescription() { return description; }
+    public List<BugReportComment> getComments() { return comments; }
+    public List<BugReportUpdate> getUpdates() { return updates; }
     public Date getUpdated() { return updated; }
 
     public static class Builder {
@@ -40,6 +47,8 @@ public class BugReport {
         private int priority;
         private String status;
         private String description;
+        private List<BugReportComment> comments;
+        private List<BugReportUpdate> updates;
         private Date updated;
 
         public Builder(int id, String author, Date created) {
@@ -65,6 +74,16 @@ public class BugReport {
 
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+
+        public Builder comments(List<BugReportComment> comments) {
+            this.comments = comments;
+            return this;
+        }
+
+        public Builder updates(List<BugReportUpdate> updates) {
+            this.updates = updates;
             return this;
         }
 

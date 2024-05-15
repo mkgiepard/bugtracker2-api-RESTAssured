@@ -1,5 +1,6 @@
 package dev.softtest.bugtracker;
 
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -9,6 +10,9 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.InsertManyResult;
 
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -18,6 +22,27 @@ import java.util.Date;
 
 public class BugReportSeeder {
 
+    private static List<BugReportComment> comments = new ArrayList<BugReportComment>() {{
+        add(new BugReportComment.Builder("mario", getDate("2024-04-17T11:33"))
+                .comment("this is first comment")
+                .build());
+        add(new BugReportComment.Builder("jbravo", getDate("2024-04-18T11:33"))
+                .comment("this is second comment")
+                .build());
+        add(new BugReportComment.Builder("dduck", getDate("2024-04-19T11:33"))
+                .comment("this is third comment")
+                .updated(getDate("2024-04-21T11:33"))
+                .build());
+    }};
+
+    private static List<BugReportUpdate> updates = new ArrayList<BugReportUpdate>() {{
+        add(new BugReportUpdate.Builder("mario", getDate("2024-04-19T11:33"))
+                .update("this is first update")
+                .build());
+        add(new BugReportUpdate.Builder("jbravo", getDate("2024-04-21T11:33"))
+                .update("this is second update")
+                .build());
+    }};
 
     private static BugReport[] data = new BugReport[] {
             new BugReport.Builder(1001, "mario", getDate("2024-04-13T11:33"))
@@ -26,12 +51,15 @@ public class BugReportSeeder {
                 .status("New")
                 .description("lorem epsum...")
                 .updated(getDate("2024-04-13T13:44"))
+                .comments(comments)
+                .updates(updates)
                 .build(),
             new BugReport.Builder(1002, "dduck", getDate("2024-04-13T11:33"))
                 .title("bug report 1002")
                 .priority(1)
                 .status("Assigned")
                 .description("lorem epsum...")
+                .comments(comments)
                 .updated(getDate("2024-04-13T13:44"))
                 .build(),
             new BugReport.Builder(1003, "muszatek", getDate("2024-04-13T11:33"))
@@ -39,6 +67,7 @@ public class BugReportSeeder {
                 .priority(1)
                 .status("New")
                 .description("lorem epsum...")
+                .updates(updates)
                 .updated(getDate("2024-04-13T13:44"))
                 .build(),
             new BugReport.Builder(1004, "muszatek", getDate("2024-04-13T11:33"))
@@ -88,13 +117,20 @@ public class BugReportSeeder {
                 .append("priority", b.getPriority())
                 .append("status", b.getStatus())
                 .append("description", b.getDescription())
+                .append("comments", b.getComments())
+                .append("updates", b.getUpdates())
                 .append("updated", b.getUpdated());
             System.out.println(d);
             bugReportData.add(d);
         }
 
+        CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
+            MongoClientSettings.getDefaultCodecRegistry(),
+            CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase(db);
+            database = database.withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Document> collection = database.getCollection("bugreports");
 
             IndexOptions indexOptions = new IndexOptions().unique(true);
