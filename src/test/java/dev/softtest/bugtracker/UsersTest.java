@@ -28,7 +28,7 @@ public class UsersTest {
 
     @BeforeClass
     public static void setup() {
-        env = Dotenv.load();
+        env = Dotenv.configure().ignoreIfMissing().load();
      }
 
      @Before
