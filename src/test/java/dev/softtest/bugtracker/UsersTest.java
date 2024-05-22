@@ -25,10 +25,15 @@ import static org.hamcrest.Matchers.*;
 
 public class UsersTest {
     public static Dotenv env;
+    public static String USER_DEFAULT_PWD;
 
     @BeforeClass
     public static void setup() {
         env = Dotenv.configure().ignoreIfMissing().load();
+        USER_DEFAULT_PWD = env.get("USER_DEFAULT_PWD");
+        if (USER_DEFAULT_PWD == null || USER_DEFAULT_PWD == "") {
+            USER_DEFAULT_PWD = System.getenv("USER_DEFAULT_PWD");
+        }
      }
 
      @Before
@@ -307,11 +312,11 @@ public class UsersTest {
             Document testUserOne = new Document("_id", new ObjectId())
                 .append("username", "mario")
                 .append("email", "mario@softtest.dev")
-                .append("password", env.get("DEFAULT_PWD"));
+                .append("password", USER_DEFAULT_PWD);
             Document testUserTwo = new Document("_id", new ObjectId())
                 .append("username", "bross")
                 .append("email", "bross@softtest.dev")
-                .append("password", env.get("DEFAULT_PWD"));
+                .append("password", USER_DEFAULT_PWD);
  
                 InsertOneResult resultOne = collection.insertOne(testUserOne);
             InsertOneResult resultTwo = collection.insertOne(testUserTwo);

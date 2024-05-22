@@ -20,13 +20,13 @@ public class UserSeeder {
     public static Dotenv env = Dotenv.load();
 
     private static User[] data = new User[]{
-        new User("jbravo", "jbravo@softtest.dev", "John", "Bravo", env.get("DEFAULT_PWD")),
-        new User("dduck", "dduck@softtest.dev", "Donald", "Duck", env.get("DEFAULT_PWD")),
-        new User("swawelski", "swawelski@softtest.dev", "Smok", "Wawelski",env.get("DEFAULT_PWD")),
-        new User("muszatek", "muszatek@softtest.dev", "Mis", "Uszatek", env.get("DEFAULT_PWD")),
-        new User("reksio", "reksio@softtest.dev", "Reksio", "", env.get("DEFAULT_PWD")),
-        new User("mario", "one2@one.com", "Mario", "Bross", env.get("DEFAULT_PWD")),
-        new User("qbtest", "qbtest@selftest.dev", "Qb", "Test", env.get("DEFAULT_PWD"))
+        new User("jbravo", "jbravo@softtest.dev", "John", "Bravo", env.get("USER_DEFAULT_PWD")),
+        new User("dduck", "dduck@softtest.dev", "Donald", "Duck", env.get("USER_DEFAULT_PWD")),
+        new User("swawelski", "swawelski@softtest.dev", "Smok", "Wawelski",env.get("USER_DEFAULT_PWD")),
+        new User("muszatek", "muszatek@softtest.dev", "Mis", "Uszatek", env.get("USER_DEFAULT_PWD")),
+        new User("reksio", "reksio@softtest.dev", "Reksio", "", env.get("USER_DEFAULT_PWD")),
+        new User("mario", "one2@one.com", "Mario", "Bross", env.get("USER_DEFAULT_PWD")),
+        new User("qbtest", "qbtest@selftest.dev", "Qb", "Test", env.get("USER_DEFAULT_PWD"))
     };
 
     public static void wipe(String db) {
